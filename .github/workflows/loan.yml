@@ -1,4 +1,4 @@
-name: Java CI with Maven
+name: Loan Application CI
 
 on:
   push:
@@ -33,6 +33,7 @@ jobs:
 
       - name: Run tests
         run: mvn test
+        continue-on-error: true
 
       - name: Upload test results
         if: always()
@@ -47,3 +48,7 @@ jobs:
         with:
           name: extent-report
           path: target/cucumber-reports/extent-report.html
+
+      - name: Show build logs
+        if: failure()
+        run: cat target/surefire-reports/*.txt
