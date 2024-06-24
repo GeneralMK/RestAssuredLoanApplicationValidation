@@ -27,8 +27,6 @@ public class LoanValidationSteps {
 
     @Given("the client submits the following details")
     public void the_client_submits_the_following_details(io.cucumber.datatable.DataTable dataTable) {
-        List<Map<String, String>> data = dataTable.asMaps(String.class, String.class);
-
         List<Map<String, String>> detailsList = dataTable.asMaps(String.class, String.class);
         requestBody = detailsList.get(0);
 
