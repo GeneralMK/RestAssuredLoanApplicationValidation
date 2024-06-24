@@ -31,7 +31,7 @@ public class LoanValidationSteps {
 
         List<Map<String, String>> detailsList = dataTable.asMaps(String.class, String.class);
         requestBody = detailsList.get(0);
-        // Create the request body
+
          requestBody1= String.format(
                 "{\"bankAccount\": {\"accountNumber\": %s, \"bankName\": \"%s\"}, \"idNumber\": %s, \"name\": \"%s\", \"surname\": \"%s\"}",
                 requestBody.get("accountNumber"),
@@ -39,7 +39,7 @@ public class LoanValidationSteps {
                 requestBody.get("idNumber"),
                 requestBody.get("name"),
                 requestBody.get("surname")
-        );// Assuming there's only one row of data
+        );
     }
 
     @When("the client applies for a loan")
@@ -61,8 +61,6 @@ public class LoanValidationSteps {
     @Then("the validation status should be {string}")
     public void the_validation_status_should_be(String validationStatus) {
         boolean status = response.jsonPath().getBoolean("validationStatus");
-        System.out.println("Expected Validation Status: " + validationStatus);
-        System.out.println("Actual Validation Status: " + status);
         if (validationStatus.equalsIgnoreCase("true")) {
             assertTrue(status);
         } else {
@@ -74,8 +72,6 @@ public class LoanValidationSteps {
     public void the_response_should_contain_error_message(String errorMessage) {
         List<String> errors = response.jsonPath().getList("errors");
         if (!errorMessage.isEmpty()) {
-            System.out.println("Expected Error Message: " + errorMessage);
-            System.out.println("Actual Error Messages: " + errors);
             assertTrue(errors.contains(errorMessage), "Error message not found in the response.");
         } else {
             assertTrue(errors.isEmpty(), "Expected no error messages but found some.");
@@ -85,8 +81,6 @@ public class LoanValidationSteps {
     @Then("the response should contain warning message {string}")
     public void the_response_should_contain_warning_message(String warningMessage) {
         List<String> warnings = response.jsonPath().getList("warnings");
-        System.out.println("Expected Warning Message: " + warningMessage);
-        System.out.println("Actual Warning Messages: " + warnings);
         if (!warningMessage.isEmpty()) {
             assertTrue(warnings.contains(warningMessage), "Warning message not found in the response.");
         } else {
