@@ -2,9 +2,9 @@ name: Loan Application CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build:
@@ -12,24 +12,17 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up JDK 11
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
-          distribution: 'adopt'
-          java-version: '11'
-
-      - name: Cache Maven packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          distribution: temurin
+          java-version: "11"
+          cache: maven
 
       - name: Install Maven dependencies
-        run: mvn install -DskipTests
+        run: mvn clean install -DskipTests
 
       - name: Run tests
         run: mvn test
@@ -37,18 +30,25 @@ jobs:
 
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: target/surefire-reports/
+          if-no-files-found: warn
 
       - name: Upload Extent Report
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: extent-report
           path: target/cucumber-reports/extent-report.html
+          if-no-files-found: warn
 
       - name: Show build logs
         if: failure()
-        run: cat target/surefire-reports/*.txt
+        run: |
+          if ls target/surefire-reports/*.txt 1> /dev/null 2>&1; then
+            cat target/surefire-reports/*.txt
+          else
+            echo "No Surefire report logs found."
+          fi
